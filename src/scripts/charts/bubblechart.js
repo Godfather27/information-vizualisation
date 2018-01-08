@@ -1,5 +1,4 @@
 import * as d3 from 'd3';
-import { color } from 'd3-color';
 
 let svg;
 let div;
@@ -26,7 +25,6 @@ function bubbleChartCreate() {
 }
 
 function update(data) {
-  const color = d3.scaleOrdinal(d3.schemeCategory20);
   // transition
   const t = d3.transition().duration(2000);
 
