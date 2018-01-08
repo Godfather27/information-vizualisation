@@ -14,22 +14,26 @@ rect:hover {
   font-size: smaller;
 }
 
-div.tooltip {	
-  position: absolute;			
-  text-align: center;							
-  height: 10px;					
+div.tooltip {
+  position: absolute;
+  text-align: center;
+  height: 10px;
   padding: 4px;
   font-size: 12px;
   background: lightsteelblue;
   display:inline-table;
   border: 0px;
   border-radius: 2px;
-  pointer-events: none;			
+  pointer-events: none;
 }
 
 .link {
-    fill: none;
-    stroke: #555;
-    stroke-opacity: 0.4;
-    stroke-width: 1.5px;
-  }
+  fill: none;
+  stroke: #555;
+  stroke-opacity: 0.4;
+  stroke-width: 1.5px;
+}
+
+.rect {
+  fill: black;
+}
