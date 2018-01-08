@@ -12,6 +12,8 @@ let data17;
 let tree;
 let root;
 let svg;
+let gkz;
+const currentGKZ = () => gkz;
 
 const setManualSpacing = (d) => {
   d.y = (d.depth * width) / 4;
@@ -24,6 +26,7 @@ const setManualSpacing = (d) => {
 };
 
 function openNode(d) {
+  gkz = d.data.GKZ;
   d3.select('body h1').html('Ausgewähltes Gebiet: ' + d.data.Gebietsname);
   collapse(root);
   openChildren(d);
@@ -124,4 +127,4 @@ function treechartCreate(source13, source17) {
   treechartUpdate();
 }
 
-export { treechartCreate, treechartUpdate };
+export { treechartCreate, treechartUpdate, currentGKZ };
