@@ -7,7 +7,7 @@ const height = 500;
 const duration = 50;
 let data13;
 let data17;
-let treemap;
+let tree;
 let root;
 let svg;
 
@@ -15,7 +15,7 @@ function buildGraph(source) {
   let data;
   source.forEach((result) => {
     if (result.GKZ === 'G00000') {
-      data = result;
+      data = Object.assign({}, result);
       data.children = [];
     } else if (+result.GKZ.slice(2, 6) === 0 && /G\d{5}/.test(result.GKZ)) {
       if (!data) {
@@ -26,14 +26,14 @@ function buildGraph(source) {
         };
       }
       result.children = [];
-      data.children.push(result);
+      data.children.push(Object.assign({}, result));
     } else if (+result.GKZ.slice(5, 6) === 0) {
       result.children = [];
-      data.children[+result.GKZ.slice(1, 2) - 1].children.push(result);
+      data.children[+result.GKZ.slice(1, 2) - 1].children.push(Object.assign({}, result));
     } else if (!/Wahlkarten/.test(result.Gebietsname)) {
       const parent = data.children[+result.GKZ.slice(1, 2) - 1].children
         .find(e => e.GKZ.slice(0, 4) === result.GKZ.slice(0, 4));
-      parent.children.push(result);
+      parent.children.push(Object.assign({}, result));
     }
   });
   return data;
@@ -74,42 +74,51 @@ const setManualSpacing = (d, i) => {
 };
 
 function treechartUpdate() {
-  const treeData = treemap(root);
-
+  const treeData = tree(root);
   const nodes = treeData.descendants();
 
-  nodes.forEach(setManualSpacing);
+  updateNodes(nodes);
+  updateLinks(treeData, nodes);
+}
 
+function updateNodes(nodes) {
+  nodes.forEach(setManualSpacing);
   const node = svg.selectAll('g.node')
     .data(nodes, d => d.data.GKZ);
-
   const nodeEnter = node.enter().append('g')
     .attr('class', 'node')
     .attr('transform', d => `translate(${d.y},${d.x})`)
     .on('click', openNode);
-
   nodeEnter
     .attr('fill-opacity', 0)
     .transition(duration)
     .attr('fill-opacity', 1);
-
   nodeEnter.append('text')
     .attr('dy', '.35em')
     .attr('text-anchor', 'start')
     .text(d => d.data.Gebietsname);
-
   const nodeUpdate = nodeEnter.merge(node);
-
   nodeUpdate
     .attr('transform', d => `translate(${d.y},${d.x})`);
-
   const nodeExit = node.exit().transition(duration)
-    .style('fill-opacity', 1e-6)
+    .style('fill-opacity', 0)
     .remove();
-
-    // On exit reduce the opacity of text labels
+  // On exit reduce the opacity of text labels
   nodeExit.select('text')
-    .style('fill-opacity', 1e-6);
+    .style('fill-opacity', 0);
+}
+
+function updateLinks(treeData, nodes) {
+  const links = treeData.links(nodes);
+  const link = svg.selectAll('.link')
+    .data(links, d => d.target.GKZ);
+  const linkEnter = link.enter().append('path')
+    .attr('class', 'link')
+    .attr('d', d3.linkHorizontal()
+      .x(d => d.y + 25)
+      .y(d => d.x));
+  const linkUpdate = link.merge(link);
+  const linkExit = link.exit().remove();
 }
 
 function treechartCreate(source13, source17) {
@@ -121,7 +130,7 @@ function treechartCreate(source13, source17) {
     .attr('width', width)
     .attr('height', height);
 
-  treemap = d3.tree().size([height, width]);
+  tree = d3.tree().size([height, width]);
   root = d3.hierarchy(data);
 
   root.children.forEach(collapse);
