@@ -26,13 +26,12 @@ function bubbleChartCreate() {
 }
 
 function update(data) {
-  const diameter = 600;
   const color = d3.scaleOrdinal(d3.schemeCategory20);
   // transition
   const t = d3.transition().duration(2000);
 
   const bubble = d3.pack(data)
-    .size([diameter, diameter])
+    .size([600, 600])
     .padding(1.5);
 
   const nodes = d3.hierarchy(data)
@@ -58,27 +57,27 @@ function update(data) {
 
   // EXIT
   circle.exit()
-    .style('fill', (d => color(d.data.type)))
+    .style('fill', (d => d.data.color))
     .transition(t)
-    .attr('r', 1e-6)
+    .attr('r', 1)
     .remove();
 
   // UPDATE
   circle
     .transition(t)
-    .style('fill', (d => color(d.data.type)))
+    .style('fill', (d => d.data.color))
     .attr('r', (d => d.r))
     .attr('cx', (d => d.x))
     .attr('cy', (d => d.y));
 
   // ENTER
   circle.enter().append('circle')
-    .attr('r', 1e-6)
+    .attr('r', 1)
     .attr('cx', (d => d.x))
     .attr('cy', (d => d.y))
-    .style('fill', (d => color(d.data.type)))
+    .style('fill', (d => d.data.color))
     .transition(t)
-    .style('fill', (d => color(d.data.type)))
+    // .style('fill', (d => d.data.color))
     .attr('r', (d => d.r));
 }
 
@@ -103,13 +102,13 @@ function bubbleChartUpdate(data17, gkz, partei = null) {
         countValue = data17[i][partei];
         countLabel = partei;
       }
-      if (data17[i].GKZ.substring(1, ebene * 2) === gkz.substring(1, ebene * 2)) {
+      if (data17[i].GKZ.substring(1, ebene * 2) === gkz.substring(1, ebene * 2) || gkz === 'G00000') {
         firstClusterData.push({
           gkz: data17[i].GKZ,
           name: data17[i].Gebietsname,
           count: countValue,
           label: countLabel,
-          type: 2,
+          color: '#104E8B',
         });
       } else {
         secondClusterData.push({
@@ -117,7 +116,7 @@ function bubbleChartUpdate(data17, gkz, partei = null) {
           name: data17[i].Gebietsname,
           count: countValue,
           label: countLabel,
-          type: 1,
+          color: '#B0E2FF',
         });
       }
     }

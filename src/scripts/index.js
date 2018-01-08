@@ -12,6 +12,6 @@ d3.json(`${window.location.href}assets/nrw_2017.json`, (error17, json17) => {
     barchartCreate();
     barchartUpdate(data13, data17, 'G90000');
     bubbleChartCreate();
-    bubbleChartUpdate(data17, 'G90000');
+    bubbleChartUpdate(data17, 'G00000');
   });
 });
