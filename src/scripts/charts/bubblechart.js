@@ -82,27 +82,34 @@ function update(data) {
     .attr('r', (d => d.r));
 }
 
-function bubbleChartUpdate(data17, gkz, ebene) {
+function bubbleChartUpdate(data17, gkz) {
   const firstClusterData = [];
   const secondClusterData = [];
+  let ebene = 1;
 
-    const mostVotes =
-    Object.keys(parteien).reduce(function(a, b){ return parteien[a] > parteien[b] ? a : b });
+  if (gkz.substring(2, 4) === '00') {
+    ebene = 1;
+  } else if (gkz.substring(4, 6) === '00') {
+    ebene = 2;
+  } else {
+    ebene = 3;
+  }
 
+  for (let i = 0; i < data17.length; i += 1) {
     if (data17[i].GKZ.substring(2, 4) !== '00') { // bundesländer und wahlkarten weg
       if (data17[i].GKZ.substring(1, ebene * 2) === gkz.substring(1, ebene * 2)) {
         firstClusterData.push({
           gkz: data17[i].GKZ,
           name: data17[i].Gebietsname,
           count: data17[i].Abgegebene,
-          type: 2
+          type: 2,
         });
       } else {
         secondClusterData.push({
           gkz: data17[i].GKZ,
           name: data17[i].Gebietsname,
           count: data17[i].Abgegebene,
-          type: 1
+          type: 1,
         });
       }
     }
