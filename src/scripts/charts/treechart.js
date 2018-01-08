@@ -2,6 +2,7 @@
 import * as d3 from 'd3';
 import { barchartUpdate } from './barchart';
 import { buildGraph, collapse, openChildren } from './../helper/graph';
+import { bubbleChartUpdate } from './bubblechart';
 
 const width = 800;
 const height = 500;
@@ -23,10 +24,12 @@ const setManualSpacing = (d) => {
 };
 
 function openNode(d) {
+  d3.select('body h1').html('Ausgewähltes Gebiet: ' + d.data.Gebietsname);
   collapse(root);
   openChildren(d);
   treechartUpdate();
   barchartUpdate(data13, data17, d.data.GKZ);
+  bubbleChartUpdate(data17, d.data.GKZ);
 }
 
 function treechartUpdate() {

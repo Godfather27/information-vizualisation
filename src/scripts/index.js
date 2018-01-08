@@ -12,12 +12,6 @@ d3.json(`${window.location.href}assets/nrw_2017.json`, (error17, json17) => {
     barchartCreate();
     barchartUpdate(data13, data17, 'G90000');
     bubbleChartCreate();
-    let i = 1;
-    const testInterval = setInterval(() => {
-      bubbleChartUpdate(data17, `G${i}0000`, 1); i += 1;
-      if (i === 10) {
-        clearInterval(testInterval);
-      }
-    }, 2000);
+    bubbleChartUpdate(data17, 'G00000');
   });
 });
