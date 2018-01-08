@@ -1,4 +1,6 @@
 import * as d3 from 'd3';
+import { bubbleChartUpdate } from './bubblechart';
+import { currentGKZ } from './treechart';
 
 let xscale;
 let yscale;
@@ -46,7 +48,7 @@ function barchartCreate() {
   groupYAxis = g.append('g').attr('class', 'y axis');
 }
 
-function update(data) {
+function update(data, orig17) {
   xscale.domain(data.nrw17.map(d => d.key));
   yscale.domain([0, Math.max(
     d3.max(data.nrw13, d => d.value),
@@ -62,7 +64,10 @@ function update(data) {
     .attr('y', 0)
     .classed('nrw13', true)
     .attr('width', xscale.bandwidth())
-    .attr('height', 0);
+    .attr('height', 0)
+    .on('click', (d) => {
+      bubbleChartUpdate(orig17, currentGKZ(), d.key);
+    });
   rect13Enter.append('title');
   rect13.merge(rect13Enter).transition()
     .attr('height', d => height - yscale(d.value))
@@ -79,7 +84,10 @@ function update(data) {
     .attr('y', 0)
     .classed('nrw17', true)
     .attr('width', xscale.bandwidth())
-    .attr('height', 0);
+    .attr('height', 0)
+    .on('click', (d) => {
+      bubbleChartUpdate(orig17, currentGKZ(), d.key);
+    });
   rect17Enter.append('title');
   rect17.merge(rect17Enter).transition()
     .attr('height', d => height - yscale(d.value))
@@ -111,7 +119,7 @@ function barchartUpdate(data13, data17, gkz) {
       value: data17GKZ[common[i]],
     });
   }
-  update({ nrw13, nrw17 });
+  update({ nrw13, nrw17 }, data17);
 }
 
 export { barchartCreate, barchartUpdate };
