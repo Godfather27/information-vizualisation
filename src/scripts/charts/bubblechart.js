@@ -12,6 +12,10 @@ const width = 800 - margin.left - margin.right;
 const height = 600 - margin.top - margin.bottom;
 
 function bubbleChartCreate() {
+  d3.select('body')
+    .append('h2')
+    .html('Dunkler Cluster zeigt Gemeindes des ausgewählten Gebiet');
+
   svg = d3.select('body')
     .append('svg')
     .attr('width', width)
