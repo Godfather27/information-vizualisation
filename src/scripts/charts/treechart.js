@@ -57,6 +57,7 @@ function openChildren(d) {
 }
 
 function openNode(d) {
+  d3.select('body h1').html('Ausgewähltes Gebiet: ' + d.data.Gebietsname);
   collapse(root);
   openChildren(d);
   treechartUpdate();
