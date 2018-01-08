@@ -47,7 +47,7 @@ function update(data) {
       div.transition()
         .duration(200)
         .style('opacity', .9);
-      div.html(d.data.name)
+      div.html(d.data.name + '<br>' + d.data.label + ': ' + d.data.count + ' Stimmen')
         .style('left', (d3.event.pageX) + 'px')
         .style('top', (d3.event.pageY - 14) + 'px');
       })
@@ -82,7 +82,7 @@ function update(data) {
     .attr('r', (d => d.r));
 }
 
-function bubbleChartUpdate(data17, gkz) {
+function bubbleChartUpdate(data17, gkz, partei = null) {
   const firstClusterData = [];
   const secondClusterData = [];
   let ebene = 1;
@@ -96,19 +96,27 @@ function bubbleChartUpdate(data17, gkz) {
   }
 
   for (let i = 0; i < data17.length; i += 1) {
-    if (data17[i].GKZ.substring(2, 4) !== '00') { // bundesländer und wahlkarten weg
+    if (data17[i].GKZ.substring(2, 4) !== '00' && data17[i].GKZ.substring(4, 6) !== '00') { // bundesländer und wahlkarten weg
+      let countValue = data17[i].Abgegebene;
+      let countLabel = 'Gesamt';
+      if (partei) {
+        countValue = data17[i][partei];
+        countLabel = partei;
+      }
       if (data17[i].GKZ.substring(1, ebene * 2) === gkz.substring(1, ebene * 2)) {
         firstClusterData.push({
           gkz: data17[i].GKZ,
           name: data17[i].Gebietsname,
-          count: data17[i].Abgegebene,
+          count: countValue,
+          label: countLabel,
           type: 2,
         });
       } else {
         secondClusterData.push({
           gkz: data17[i].GKZ,
           name: data17[i].Gebietsname,
-          count: data17[i].Abgegebene,
+          count: countValue,
+          label: countLabel,
           type: 1,
         });
       }
