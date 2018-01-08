@@ -85,20 +85,6 @@ function update(data) {
 function bubbleChartUpdate(data17, gkz, ebene) {
   const firstClusterData = [];
   const secondClusterData = [];
-  console.log(gkz);
-  for (let i = 0; i < data17.length; i += 1) {
-    const parteien = {
-      SPÖ: data17[i].SPÖ,
-      ÖVP: data17[i].ÖVP,
-      FPÖ: data17[i].FPÖ,
-      GRÜNE: data17[i].GRÜNE,
-      NEOS: data17[i].NEOS,
-      KPÖ: data17[i].KPÖ,
-      CPÖ: data17[i].CPÖ,
-      M: data17[i].M,
-      EUAUS: data17[i].EUAUS,
-      SLP: data17[i].SLP,
-    };
 
     const mostVotes =
     Object.keys(parteien).reduce(function(a, b){ return parteien[a] > parteien[b] ? a : b });
@@ -109,18 +95,14 @@ function bubbleChartUpdate(data17, gkz, ebene) {
           gkz: data17[i].GKZ,
           name: data17[i].Gebietsname,
           count: data17[i].Abgegebene,
-          type: 2,
-          winner: mostVotes,
-          color: '',
+          type: 2
         });
       } else {
         secondClusterData.push({
           gkz: data17[i].GKZ,
           name: data17[i].Gebietsname,
           count: data17[i].Abgegebene,
-          type: 1,
-          winner: mostVotes,
-          color: '',
+          type: 1
         });
       }
     }
