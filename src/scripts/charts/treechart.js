@@ -1,6 +1,7 @@
 /* eslint no-use-before-define: 0 */
 import * as d3 from 'd3';
 import { barchartUpdate } from './barchart';
+import { buildGraph, collapse, openChildren } from './../helper/graph';
 import { bubbleChartUpdate } from './bubblechart';
 
 const width = 800;
@@ -11,52 +12,21 @@ let data17;
 let tree;
 let root;
 let svg;
+let gkz;
+const currentGKZ = () => gkz;
 
-function buildGraph(source) {
-  let data;
-  source.forEach((result) => {
-    if (result.GKZ === 'G00000') {
-      data = Object.assign({}, result);
-      data.children = [];
-    } else if (+result.GKZ.slice(2, 6) === 0 && /G\d{5}/.test(result.GKZ)) {
-      if (!data) {
-        data = {
-          GKZ: 'G00000',
-          children: [],
-          Gebietsname: 'Österreich',
-        };
-      }
-      result.children = [];
-      data.children.push(Object.assign({}, result));
-    } else if (+result.GKZ.slice(5, 6) === 0) {
-      result.children = [];
-      data.children[+result.GKZ.slice(1, 2) - 1].children.push(Object.assign({}, result));
-    } else if (!/Wahlkarten/.test(result.Gebietsname)) {
-      const parent = data.children[+result.GKZ.slice(1, 2) - 1].children
-        .find(e => e.GKZ.slice(0, 4) === result.GKZ.slice(0, 4));
-      parent.children.push(Object.assign({}, result));
-    }
-  });
-  return data;
-}
-
-function collapse(d) {
-  if (d.children) {
-    d.collapsedChildren = d.children;
-    d.collapsedChildren.forEach(collapse);
-    d.children = null;
+const setManualSpacing = (d) => {
+  d.y = (d.depth * width) / 4;
+  if (d.depth > 0) {
+    d.x = (((height - 20) / (Math.max(d.parent.children.length - 1, 1))) *
+      d.parent.children.findIndex(e => e.data.GKZ === d.data.GKZ)) + 10;
+  } else {
+    d.x = height / 2;
   }
-}
-
-function openChildren(d) {
-  d.children = d.collapsedChildren;
-  d.collapsedChildren = null;
-  if (d.parent) {
-    openChildren(d.parent);
-  }
-}
+};
 
 function openNode(d) {
+  gkz = d.data.GKZ;
   d3.select('body h1').html('Ausgewähltes Gebiet: ' + d.data.Gebietsname);
   collapse(root);
   openChildren(d);
@@ -64,17 +34,6 @@ function openNode(d) {
   barchartUpdate(data13, data17, d.data.GKZ);
   bubbleChartUpdate(data17, d.data.GKZ);
 }
-
-const setManualSpacing = (d, i) => {
-  d.y = (d.depth * width) / 4;
-  if (d.depth === 1) {
-    const statePosition = (height / 2 / d.parent.children.length) * (i - 1);
-    const marginTop = height / 4;
-    d.x = statePosition + marginTop;
-  } else if (d.depth === 0) {
-    d.x = height / 2;
-  }
-};
 
 function treechartUpdate() {
   const treeData = tree(root);
@@ -86,27 +45,40 @@ function treechartUpdate() {
 
 function updateNodes(nodes) {
   nodes.forEach(setManualSpacing);
+
   const node = svg.selectAll('g.node')
     .data(nodes, d => d.data.GKZ);
-  const nodeEnter = node.enter().append('g')
+
+  const nodeEnter = node.enter()
+    .append('g')
     .attr('class', 'node')
     .attr('transform', d => `translate(${d.y},${d.x})`)
     .on('click', openNode);
+
+  nodeEnter.append('path')
+    .attr('class', 'rect')
+    .attr('d', d => d3.path().rect(d.x, d.y, 50, 25));
+
   nodeEnter
     .attr('fill-opacity', 0)
     .transition(duration)
     .attr('fill-opacity', 1);
+
   nodeEnter.append('text')
     .attr('dy', '.35em')
     .attr('text-anchor', 'start')
     .text(d => d.data.Gebietsname);
+
   const nodeUpdate = nodeEnter.merge(node);
+
   nodeUpdate
     .attr('transform', d => `translate(${d.y},${d.x})`);
-  const nodeExit = node.exit().transition(duration)
+
+  const nodeExit = node.exit()
+    .transition(duration)
     .style('fill-opacity', 0)
     .remove();
-  // On exit reduce the opacity of text labels
+
   nodeExit.select('text')
     .style('fill-opacity', 0);
 }
@@ -115,13 +87,27 @@ function updateLinks(treeData, nodes) {
   const links = treeData.links(nodes);
   const link = svg.selectAll('.link')
     .data(links, d => d.target.GKZ);
+
   const linkEnter = link.enter().append('path')
     .attr('class', 'link')
     .attr('d', d3.linkHorizontal()
       .x(d => d.y + 25)
       .y(d => d.x));
-  const linkUpdate = link.merge(link);
-  const linkExit = link.exit().remove();
+
+  linkEnter
+    .style('stroke-opacity', 0)
+    .transition(duration)
+    .style('stroke-opacity', 0.2);
+
+  const linkUpdate = link.merge(link)
+    .style('stroke-opacity', 0)
+    .transition(duration)
+    .style('stroke-opacity', 0.2);
+
+  const linkExit = link.exit()
+    .transition(duration)
+    .style('stroke-opacity', 0)
+    .remove();
 }
 
 function treechartCreate(source13, source17) {
@@ -141,4 +127,4 @@ function treechartCreate(source13, source17) {
   treechartUpdate();
 }
 
-export { treechartCreate, treechartUpdate };
+export { treechartCreate, treechartUpdate, currentGKZ };
