@@ -12,7 +12,7 @@ let data17;
 let tree;
 let root;
 let svg;
-let gkz;
+let gkz = 'G00000';
 const currentGKZ = () => gkz;
 
 const setManualSpacing = (d) => {
