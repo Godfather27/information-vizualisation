@@ -48,7 +48,7 @@ function barchartCreate() {
   groupYAxis = g.append('g').attr('class', 'y axis');
 }
 
-function update(data, orig17) {
+function update(data, orig13, orig17) {
   xscale.domain(data.nrw17.map(d => d.key));
   yscale.domain([0, Math.max(
     d3.max(data.nrw13, d => d.value),
@@ -66,7 +66,7 @@ function update(data, orig17) {
     .attr('width', xscale.bandwidth())
     .attr('height', 0)
     .on('click', (d) => {
-      bubbleChartUpdate(orig17, currentGKZ(), d.key);
+      bubbleChartUpdate(orig13, currentGKZ(), d.key);
     });
   rect13Enter.append('title');
   rect13.merge(rect13Enter).transition()
@@ -119,7 +119,7 @@ function barchartUpdate(data13, data17, gkz) {
       value: data17GKZ[common[i]],
     });
   }
-  update({ nrw13, nrw17 }, data17);
+  update({ nrw13, nrw17 }, data13, data17);
 }
 
 export { barchartCreate, barchartUpdate };
