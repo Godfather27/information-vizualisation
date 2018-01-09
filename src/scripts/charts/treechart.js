@@ -5,8 +5,8 @@ import { buildGraph, collapse, openChildren } from './../helper/graph';
 import { bubbleChartUpdate } from './bubblechart';
 
 const currentGKZ = () => gkz;
-const width = window.innerWidth * 0.66;
-const height = 600;
+const width = window.innerWidth * 0.55;
+const height = window.innerHeight;
 const duration = 50;
 let gkz = 'G00000';
 let data13;
@@ -27,7 +27,6 @@ const setManualSpacing = (d) => {
 
 function openNode(d) {
   gkz = d.data.GKZ;
-  d3.select('body h1').html(`Ausgewähltes Gebiet: ${d.data.Gebietsname}`);
   collapse(root);
   openChildren(d);
   treechartUpdate();

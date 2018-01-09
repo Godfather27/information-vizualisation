@@ -3,5 +3,8 @@
   "rules": {
     "no-param-reassign": 0,
     "no-confusing-arrow": 0
+  },
+  "env": {
+    "browser": true
   }
 }

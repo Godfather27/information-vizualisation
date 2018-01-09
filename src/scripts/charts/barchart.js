@@ -10,13 +10,13 @@ let yAxis;
 let xAxis;
 let g;
 const margin = {
-  top: 10,
-  bottom: 20,
+  top: 40,
+  bottom: 40,
   left: 80,
-  right: 60,
+  right: 40,
 };
-const width = 800 - margin.left - margin.right;
-const height = 600 - margin.top - margin.bottom;
+const width = (window.innerWidth * 0.45) - margin.left - margin.right;
+const height = (window.innerHeight / 2) - margin.top - margin.bottom;
 const colors = {
   SPÖ: 0,
   ÖVP: 172,
@@ -73,9 +73,9 @@ function update(data, orig13, orig17) {
     .attr('height', d => height - yscale(d.value))
     .attr('y', d => yscale(d.value))
     .attr('width', xscale.bandwidth())
-    .attr('x', d => xscale(d.key) + 25)
+    .attr('x', d => xscale(d.key) + (xscale.bandwidth() / 3))
     .style('fill', d => `hsl(${colors[d.key]},100%,40%)`);
-  rect13.merge(rect13Enter).select('title').text(d => d.key);
+  rect13.merge(rect13Enter).select('title').text(d => `${d.key}-Stimmen 2013`);
   rect13.exit().remove();
 
   const rect17 = g.selectAll('.nrw17').data(data.nrw17, d => d.key);
@@ -93,9 +93,9 @@ function update(data, orig13, orig17) {
     .attr('height', d => height - yscale(d.value))
     .attr('y', d => yscale(d.value))
     .attr('width', xscale.bandwidth())
-    .attr('x', d => xscale(d.key) + 5)
+    .attr('x', d => xscale(d.key))
     .style('fill', d => `hsl(${colors[d.key]},100%,50%)`);
-  rect17.merge(rect17Enter).select('title').text(d => d.key);
+  rect17.merge(rect17Enter).select('title').text(d => `${d.key}-Stimmen 2017`);
   rect17.exit().remove();
 }
 

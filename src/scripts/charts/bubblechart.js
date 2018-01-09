@@ -8,8 +8,8 @@ const margin = {
   left: 80,
   right: 60,
 };
-const width = 800 - margin.left - margin.right;
-const height = 600 - margin.top - margin.bottom;
+const width = (window.innerWidth * 0.45) - margin.left - margin.right;
+const height = (window.innerHeight / 2) - margin.top - margin.bottom;
 
 const colors = {
   SPÖ: 0,
@@ -25,14 +25,10 @@ const colors = {
 };
 
 function bubbleChartCreate() {
-  d3.select('body')
-    .append('h2')
-    .html('Dunkler Cluster zeigt Gemeindes des ausgewählten Gebiet');
-
   svg = d3.select('body')
     .append('svg')
-    .attr('width', width)
-    .attr('height', height)
+    .attr('width', width + margin.left + margin.right)
+    .attr('height', height + margin.top + margin.bottom)
     .attr('class', 'bubble');
 
   // Define the div for the tooltip
@@ -46,7 +42,7 @@ function update(data) {
   const t = d3.transition().duration(2000);
 
   const bubble = d3.pack(data)
-    .size([600, 600])
+    .size([width, height])
     .padding(1.5);
 
   const nodes = d3.hierarchy(data)

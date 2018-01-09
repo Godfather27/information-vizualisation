@@ -2,8 +2,6 @@
 
 
 body {
-  width: 800px;
-  margin: 25px auto;
   font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 }
 
@@ -40,4 +38,10 @@ h2{
 
 .rect {
   fill: black;
+}
+
+svg{
+  float: left;
+  border: 2px solid #eee;
+  box-sizing: border-box;
 }
