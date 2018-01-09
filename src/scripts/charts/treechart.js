@@ -64,16 +64,25 @@ function updateNodes(nodes) {
     .transition(duration)
     .attr('fill-opacity', 1);
 
+  nodeEnter.append('circle')
+    .attr('r', 10)
+    .style('fill', d => d.data.GKZ === gkz ? '#f00' : '#ccc');
+
   nodeEnter.append('text')
     .style('font-size', '0.75em')
     .attr('dy', '.35em')
-    .attr('text-anchor', 'start')
+    .attr('text-anchor', 'middle')
     .text(d => d.data.Gebietsname);
 
   const nodeUpdate = nodeEnter.merge(node);
 
   nodeUpdate
     .attr('transform', d => `translate(${d.y},${d.x})`);
+
+  nodeUpdate
+    .select('circle')
+    .attr('r', 10)
+    .style('fill', d => d.data.GKZ === gkz ? '#99f' : '#eee');
 
   const nodeExit = node.exit()
     .transition(duration)
@@ -116,11 +125,14 @@ function treechartCreate(source13, source17) {
   data17 = source17;
   data13 = source13;
 
-  svg = d3.select('body').append('svg')
+  svg = d3.select('body')
+    .append('svg')
     .attr('width', width)
-    .attr('height', height);
+    .attr('height', height)
+    .append('g')
+    .attr('transform', 'translate(50,0)');
 
-  tree = d3.tree().size([height, width]);
+  tree = d3.tree().size([height, width - 100]);
   root = d3.hierarchy(data);
 
   root.children.forEach(collapse);
