@@ -4,16 +4,16 @@ import { barchartUpdate } from './barchart';
 import { buildGraph, collapse, openChildren } from './../helper/graph';
 import { bubbleChartUpdate } from './bubblechart';
 
-const width = 800;
-const height = 500;
+const currentGKZ = () => gkz;
+const width = window.innerWidth * 0.66;
+const height = 600;
 const duration = 50;
+let gkz = 'G00000';
 let data13;
 let data17;
 let tree;
 let root;
 let svg;
-let gkz = 'G00000';
-const currentGKZ = () => gkz;
 
 const setManualSpacing = (d) => {
   d.y = (d.depth * width) / 4;
@@ -65,6 +65,7 @@ function updateNodes(nodes) {
     .attr('fill-opacity', 1);
 
   nodeEnter.append('text')
+    .style('font-size', '0.75em')
     .attr('dy', '.35em')
     .attr('text-anchor', 'start')
     .text(d => d.data.Gebietsname);
@@ -91,7 +92,7 @@ function updateLinks(treeData, nodes) {
   const linkEnter = link.enter().append('path')
     .attr('class', 'link')
     .attr('d', d3.linkHorizontal()
-      .x(d => d.y + 25)
+      .x(d => d.y)
       .y(d => d.x));
 
   linkEnter
@@ -111,9 +112,9 @@ function updateLinks(treeData, nodes) {
 }
 
 function treechartCreate(source13, source17) {
+  const data = buildGraph(source17);
   data17 = source17;
   data13 = source13;
-  const data = buildGraph(source17);
 
   svg = d3.select('body').append('svg')
     .attr('width', width)
