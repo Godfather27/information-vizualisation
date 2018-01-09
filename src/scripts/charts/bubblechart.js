@@ -57,18 +57,19 @@ function update(data) {
     .data(bubble(nodes).leaves(), (d => d.data.gkz));
 
   circle
-    .on('mouseover', function(d) { 
+    .on('mouseover', (d) => {
       div.transition()
         .duration(200)
-        .style('opacity', .9);
-      div.html(d.data.name + '<br>' + d.data.label + ': ' + d.data.count + ' Stimmen')
-        .style('left', (d3.event.pageX) + 'px')
-        .style('top', (d3.event.pageY - 14) + 'px');
-      })
-    .on('mouseout', function(d) {
+        .style('opacity', 0.9);
+      div.html(`${d.data.name}<br>${d.data.label}: ${d.data.count} Stimmen`)
+        .style('left', `${d3.event.pageX}px`)
+        .style('top', `${d3.event.pageY - 14}px`);
+    })
+    .on('mouseout', () => {
       div.transition()
         .duration(200)
-        .style("opacity", .0);})
+        .style('opacity', 0.0);
+    });
 
   // EXIT
   circle.exit()
@@ -139,6 +140,6 @@ function bubbleChartUpdate(data17, gkz, partei = null) {
     }
   }
 
-  update({ children: [{ Name: 'First', children: firstClusterData }, { Name: 'Second', children: secondClusterData }]});
+  update({ children: [{ Name: 'First', children: firstClusterData }, { Name: 'Second', children: secondClusterData }] });
 }
 export { bubbleChartCreate, bubbleChartUpdate };

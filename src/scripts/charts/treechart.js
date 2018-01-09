@@ -27,7 +27,7 @@ const setManualSpacing = (d) => {
 
 function openNode(d) {
   gkz = d.data.GKZ;
-  d3.select('body h1').html('Ausgewähltes Gebiet: ' + d.data.Gebietsname);
+  d3.select('body h1').html(`Ausgewähltes Gebiet: ${d.data.Gebietsname}`);
   collapse(root);
   openChildren(d);
   treechartUpdate();
