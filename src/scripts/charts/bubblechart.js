@@ -11,6 +11,19 @@ const margin = {
 const width = 800 - margin.left - margin.right;
 const height = 600 - margin.top - margin.bottom;
 
+const colors = {
+  SPÖ: 0,
+  ÖVP: 172,
+  FPÖ: 235,
+  GRÜNE: 120,
+  NEOS: 306,
+  KPÖ: 55,
+  CPÖ: 36,
+  M: 272,
+  EUAUS: 69,
+  SLP: 142,
+};
+
 function bubbleChartCreate() {
   d3.select('body')
     .append('h2')
@@ -100,9 +113,11 @@ function bubbleChartUpdate(data17, gkz, partei = null) {
     if (data17[i].GKZ.substring(2, 4) !== '00' && data17[i].GKZ.substring(4, 6) !== '00') { // bundesländer und wahlkarten weg
       let countValue = data17[i].Abgegebene;
       let countLabel = 'Gesamt';
+      let bubbleColor = `hsl(${0},0%,0%)`;
       if (partei) {
         countValue = data17[i][partei];
         countLabel = partei;
+        bubbleColor = `hsl(${colors[countLabel]},100%,50%)`;
       }
       if (data17[i].GKZ.substring(1, ebene * 2) === gkz.substring(1, ebene * 2) || gkz === 'G00000') {
         firstClusterData.push({
@@ -110,7 +125,7 @@ function bubbleChartUpdate(data17, gkz, partei = null) {
           name: data17[i].Gebietsname,
           count: countValue,
           label: countLabel,
-          color: '#104E8B',
+          color: bubbleColor,
         });
       } else {
         secondClusterData.push({
@@ -118,7 +133,7 @@ function bubbleChartUpdate(data17, gkz, partei = null) {
           name: data17[i].Gebietsname,
           count: countValue,
           label: countLabel,
-          color: '#B0E2FF',
+          color: bubbleColor,
         });
       }
     }
