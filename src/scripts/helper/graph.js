@@ -7,7 +7,7 @@ const copyObject = result => Object.assign({}, result);
 /**
  * wrangles data for tree graph
  * takes Array and builds a Tree-Object
- **/
+ */
 function buildGraph(source) {
   let data;
   source.forEach((result) => {
