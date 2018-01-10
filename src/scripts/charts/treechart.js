@@ -18,8 +18,8 @@ let svg;
 const setManualSpacing = (d) => {
   d.y = (d.depth * width) / 4;
   if (d.depth > 0) {
-    d.x = (((height - 20) / (Math.max(d.parent.children.length - 1, 1))) *
-      d.parent.children.findIndex(e => e.data.GKZ === d.data.GKZ)) + 10;
+    d.x = (((height - 80) / (Math.max(d.parent.children.length - 1, 1))) *
+      d.parent.children.findIndex(e => e.data.GKZ === d.data.GKZ)) + 40;
   } else {
     d.x = height / 2;
   }
