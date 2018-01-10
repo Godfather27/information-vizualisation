@@ -1,5 +1,8 @@
 import * as d3 from 'd3';
 
+/**
+ * global variables
+ */
 let svg;
 let div;
 const margin = {
@@ -11,6 +14,9 @@ const margin = {
 const width = (window.innerWidth * 0.45) - margin.left - margin.right;
 const height = (window.innerHeight / 2) - margin.top - margin.bottom;
 
+/**
+ * color definitions
+ */
 const colors = {
   SPÖ: 0,
   ÖVP: 172,
@@ -24,6 +30,11 @@ const colors = {
   SLP: 142,
 };
 
+/**
+ * create function for bubble chart
+ * creates and appends svg element to DOM
+ * creates and appends tooltip element to DOM
+ */
 function bubbleChartCreate() {
   svg = d3.select('body')
     .append('svg')
@@ -37,10 +48,14 @@ function bubbleChartCreate() {
     .style('opacity', 0);
 }
 
+/**
+ * data update function for bubble chart
+ */
 function update(data) {
-  // transition
+  // transition definition
   const t = d3.transition().duration(2000);
 
+  // create data back for bubbles
   const bubble = d3.pack(data)
     .size([width, height])
     .padding(1.5);
@@ -48,10 +63,11 @@ function update(data) {
   const nodes = d3.hierarchy(data)
     .sum((d => d.count));
 
-  // JOIN
+
   const circle = svg.selectAll('circle')
     .data(bubble(nodes).leaves(), (d => d.data.gkz));
 
+  // definition for mouse events to show tooltip
   circle
     .on('mouseover', (d) => {
       div.transition()
@@ -67,14 +83,14 @@ function update(data) {
         .style('opacity', 0.0);
     });
 
-  // EXIT
+  // exit phase
   circle.exit()
     .style('fill', (d => d.data.color))
     .transition(t)
     .attr('r', 1)
     .remove();
 
-  // UPDATE
+  // update phase
   circle
     .transition(t)
     .style('fill', (d => d.data.color))
@@ -82,22 +98,25 @@ function update(data) {
     .attr('cx', (d => d.x))
     .attr('cy', (d => d.y));
 
-  // ENTER
+  // enter phase
   circle.enter().append('circle')
     .attr('r', 1)
     .attr('cx', (d => d.x))
     .attr('cy', (d => d.y))
     .style('fill', (d => d.data.color))
     .transition(t)
-    // .style('fill', (d => d.data.color))
     .attr('r', (d => d.r));
 }
 
+/**
+ * filters dataset and builds data structure bubble cluster
+ */
 function bubbleChartUpdate(data17, gkz, partei = null) {
   const firstClusterData = [];
   const secondClusterData = [];
   let ebene = 1;
 
+  // defines the region level
   if (gkz.substring(2, 4) === '00') {
     ebene = 1;
   } else if (gkz.substring(4, 6) === '00') {
@@ -107,15 +126,19 @@ function bubbleChartUpdate(data17, gkz, partei = null) {
   }
 
   for (let i = 0; i < data17.length; i += 1) {
-    if (data17[i].GKZ.substring(2, 4) !== '00' && data17[i].GKZ.substring(4, 6) !== '00') { // bundesländer und wahlkarten weg
+    if (data17[i].GKZ.substring(2, 4) !== '00' && data17[i].GKZ.substring(4, 6) !== '00') {
       let countValue = data17[i].Abgegebene;
       let countLabel = 'Gesamt';
       let bubbleColor = `hsl(${0},0%,0%)`;
+
+      // changes color for bubbles if 'partei' is set
       if (partei) {
         countValue = data17[i][partei];
         countLabel = partei;
         bubbleColor = `hsl(${colors[countLabel]},100%,50%)`;
       }
+
+      // structures the tow clusters for the bubble chart
       if (data17[i].GKZ.substring(1, ebene * 2) === gkz.substring(1, ebene * 2) || gkz === 'G00000') {
         firstClusterData.push({
           gkz: data17[i].GKZ,
