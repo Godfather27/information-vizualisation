@@ -111,7 +111,7 @@ function update(data) {
 /**
  * filters dataset and builds data structure bubble cluster
  */
-function bubbleChartUpdate(data17, gkz, partei = null) {
+function bubbleChartUpdate(data, gkz, partei = null) {
   const firstClusterData = [];
   const secondClusterData = [];
   let ebene = 1;
@@ -125,32 +125,32 @@ function bubbleChartUpdate(data17, gkz, partei = null) {
     ebene = 3;
   }
 
-  for (let i = 0; i < data17.length; i += 1) {
-    if (data17[i].GKZ.substring(2, 4) !== '00' && data17[i].GKZ.substring(4, 6) !== '00') {
-      let countValue = data17[i].Abgegebene;
+  for (let i = 0; i < data.length; i += 1) {
+    if (data[i].GKZ.substring(2, 4) !== '00' && data[i].GKZ.substring(4, 6) !== '00') {
+      let countValue = data[i].Abgegebene;
       let countLabel = 'Gesamt';
       let bubbleColor = `hsl(${0},0%,0%)`;
 
       // changes color for bubbles if 'partei' is set
       if (partei) {
-        countValue = data17[i][partei];
+        countValue = data[i][partei];
         countLabel = partei;
         bubbleColor = `hsl(${colors[countLabel]},100%,50%)`;
       }
 
       // structures the tow clusters for the bubble chart
-      if (data17[i].GKZ.substring(1, ebene * 2) === gkz.substring(1, ebene * 2) || gkz === 'G00000') {
+      if (data[i].GKZ.substring(1, ebene * 2) === gkz.substring(1, ebene * 2) || gkz === 'G00000') {
         firstClusterData.push({
-          gkz: data17[i].GKZ,
-          name: data17[i].Gebietsname,
+          gkz: data[i].GKZ,
+          name: data[i].Gebietsname,
           count: countValue,
           label: countLabel,
           color: bubbleColor,
         });
       } else {
         secondClusterData.push({
-          gkz: data17[i].GKZ,
-          name: data17[i].Gebietsname,
+          gkz: data[i].GKZ,
+          name: data[i].Gebietsname,
           count: countValue,
           label: countLabel,
           color: bubbleColor,
