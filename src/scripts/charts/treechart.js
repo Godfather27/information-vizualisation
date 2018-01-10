@@ -8,6 +8,10 @@ import { bubbleChartUpdate } from './bubblechart';
  * getter function for currently selected gkz
  */
 const currentGKZ = () => gkz;
+
+/**
+ * global variables
+ */
 const width = window.innerWidth * 0.55;
 const height = window.innerHeight;
 const duration = 50;
