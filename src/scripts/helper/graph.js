@@ -1,5 +1,13 @@
+/**
+ * helper function for copying Objects
+ * this avoids references to the original Object
+ */
 const copyObject = result => Object.assign({}, result);
 
+/**
+ * wrangles data for tree graph
+ * takes Array and builds a Tree-Object
+ **/
 function buildGraph(source) {
   let data;
   source.forEach((result) => {
@@ -8,6 +16,7 @@ function buildGraph(source) {
     const isState = +result.GKZ.slice(2, 6) === 0;
     const isRegion = +result.GKZ.slice(4, 6) === 0;
     const isCommunity = !/Wahlkarten/.test(result.Gebietsname);
+    const stateId = +result.GKZ.slice(1, 2) - 1;
 
     if (!correctFormat) {
       return;
@@ -28,9 +37,10 @@ function buildGraph(source) {
     } else if (isRegion) {
       const leaf = copyObject(result);
       leaf.children = [];
-      data.children[+result.GKZ.slice(1, 2) - 1].children.push(leaf);
+      data.children[stateId].children.push(leaf);
     } else if (isCommunity) {
-      const parent = data.children[+result.GKZ.slice(1, 2) - 1].children
+      // finds parent of current community
+      const parent = data.children[stateId].children
         .find(e => e.GKZ.slice(0, 4) === result.GKZ.slice(0, 4));
       parent.children.push(copyObject(result));
     }
@@ -38,6 +48,9 @@ function buildGraph(source) {
   return data;
 }
 
+/**
+ * hides all children of graph
+ */
 function collapse(d) {
   if (d.children) {
     d.collapsedChildren = d.children;
@@ -46,6 +59,9 @@ function collapse(d) {
   }
 }
 
+/**
+ * opens a Leaf and it's parent nodes
+ */
 function openChildren(d) {
   d.children = d.collapsedChildren;
   d.collapsedChildren = null;
