@@ -52,8 +52,13 @@ function update(data) {
   const circle = svg.selectAll('circle')
     .data(bubble(nodes).leaves(), d => d.data.gkz);
 
-  // definition for mouse events to show tooltip
-  circle
+  // enter phase
+  const circleEnter = circle.enter()
+    .append('circle')
+    .attr('r', 1)
+    .attr('cx', (d => d.x))
+    .attr('cy', (d => d.y))
+    .style('fill', (d => d.data.color))
     .on('mouseover', (d) => {
       tooltip.transition()
         .duration(200)
@@ -66,20 +71,12 @@ function update(data) {
       tooltip.transition()
         .duration(200)
         .style('opacity', 0.0);
-    });
-
-  // enter phase
-  circle.enter()
-    .append('circle')
-    .attr('r', 1)
-    .attr('cx', (d => d.x))
-    .attr('cy', (d => d.y))
-    .style('fill', (d => d.data.color))
+    })
     .transition(t)
     .attr('r', (d => d.r));
 
   // update phase
-  circle
+  circle.merge(circleEnter)
     .transition(t)
     .style('fill', (d => d.data.color))
     .attr('r', (d => d.r))
@@ -87,11 +84,7 @@ function update(data) {
     .attr('cy', (d => d.y));
 
   // exit phase
-  circle.exit()
-    .style('fill', d => d.data.color)
-    .transition(t)
-    .attr('r', 1)
-    .remove();
+  circle.exit().remove();
 }
 
 /**
