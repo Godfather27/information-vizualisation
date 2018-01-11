@@ -91,7 +91,7 @@ function updateNodes(nodes) {
 
   nodeEnter.append('circle')
     .attr('r', 10)
-    .style('fill', d => d.data.GKZ === gkz ? '#f00' : '#ccc');
+    .style('fill', d => d.data.GKZ === gkz ? '#99f' : '#ccc');
 
   nodeEnter.append('text')
     .style('font-size', '0.75em')
@@ -103,11 +103,7 @@ function updateNodes(nodes) {
   const nodeUpdate = nodeEnter.merge(node);
 
   nodeUpdate
-    .attr('transform', d => `translate(${d.y},${d.x})`);
-
-  nodeUpdate
     .select('circle')
-    .attr('r', 10)
     .style('fill', d => d.data.GKZ === gkz ? '#99f' : '#eee');
 
   // Exit Phase

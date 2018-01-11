@@ -24,13 +24,6 @@ function buildGraph(source) {
       data = copyObject(result);
       data.children = [];
     } else if (isState) {
-      if (!data) {
-        data = {
-          GKZ: 'G00000',
-          children: [],
-          Gebietsname: 'Österreich',
-        };
-      }
       const leaf = copyObject(result);
       leaf.children = [];
       data.children.push(leaf);
