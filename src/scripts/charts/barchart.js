@@ -1,4 +1,5 @@
 import * as d3 from 'd3';
+import colors from './../helper/const';
 import { bubbleChartUpdate } from './bubblechart';
 import { currentGKZ } from './treechart';
 
@@ -18,18 +19,6 @@ const margin = {
 };
 const width = (window.innerWidth * 0.45) - margin.left - margin.right;
 const height = (window.innerHeight / 2) - margin.top - margin.bottom;
-const colors = {
-  SPÖ: 0,
-  ÖVP: 172,
-  FPÖ: 235,
-  GRÜNE: 120,
-  NEOS: 306,
-  KPÖ: 55,
-  CPÖ: 36,
-  M: 272,
-  EUAUS: 69,
-  SLP: 142,
-};
 
 // Create Main Structures to be used
 function barchartCreate() {

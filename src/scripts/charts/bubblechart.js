@@ -1,10 +1,11 @@
 import * as d3 from 'd3';
+import colors from './../helper/const';
 
 /**
  * global variables
  */
 let svg;
-let div;
+let tooltip;
 const margin = {
   top: 10,
   bottom: 20,
@@ -13,22 +14,6 @@ const margin = {
 };
 const width = (window.innerWidth * 0.45) - margin.left - margin.right;
 const height = (window.innerHeight / 2) - margin.top - margin.bottom;
-
-/**
- * color definitions
- */
-const colors = {
-  SPÖ: 0,
-  ÖVP: 172,
-  FPÖ: 235,
-  GRÜNE: 120,
-  NEOS: 306,
-  KPÖ: 55,
-  CPÖ: 36,
-  M: 272,
-  EUAUS: 69,
-  SLP: 142,
-};
 
 /**
  * create function for bubble chart
@@ -43,7 +28,7 @@ function bubbleChartCreate() {
     .attr('class', 'bubble');
 
   // Define the div for the tooltip
-  div = d3.select('body').append('div')
+  tooltip = d3.select('body').append('div')
     .attr('class', 'tooltip')
     .style('opacity', 0);
 }
@@ -55,7 +40,7 @@ function update(data) {
   // transition definition
   const t = d3.transition().duration(2000);
 
-  // create data back for bubbles
+  // create data pack for bubbles
   const bubble = d3.pack(data)
     .size([width, height])
     .padding(1.5);
@@ -65,30 +50,33 @@ function update(data) {
 
 
   const circle = svg.selectAll('circle')
-    .data(bubble(nodes).leaves(), (d => d.data.gkz));
+    .data(bubble(nodes).leaves(), d => d.data.gkz);
 
   // definition for mouse events to show tooltip
   circle
     .on('mouseover', (d) => {
-      div.transition()
+      tooltip.transition()
         .duration(200)
         .style('opacity', 0.9);
-      div.html(`${d.data.name}<br>${d.data.label}: ${d.data.count} Stimmen`)
+      tooltip.html(`${d.data.name}<br>${d.data.label}: ${d.data.count} Stimmen`)
         .style('left', `${d3.event.pageX}px`)
         .style('top', `${d3.event.pageY - 14}px`);
     })
     .on('mouseout', () => {
-      div.transition()
+      tooltip.transition()
         .duration(200)
         .style('opacity', 0.0);
     });
 
-  // exit phase
-  circle.exit()
+  // enter phase
+  circle.enter()
+    .append('circle')
+    .attr('r', 1)
+    .attr('cx', (d => d.x))
+    .attr('cy', (d => d.y))
     .style('fill', (d => d.data.color))
     .transition(t)
-    .attr('r', 1)
-    .remove();
+    .attr('r', (d => d.r));
 
   // update phase
   circle
@@ -98,14 +86,12 @@ function update(data) {
     .attr('cx', (d => d.x))
     .attr('cy', (d => d.y));
 
-  // enter phase
-  circle.enter().append('circle')
-    .attr('r', 1)
-    .attr('cx', (d => d.x))
-    .attr('cy', (d => d.y))
-    .style('fill', (d => d.data.color))
+  // exit phase
+  circle.exit()
+    .style('fill', d => d.data.color)
     .transition(t)
-    .attr('r', (d => d.r));
+    .attr('r', 1)
+    .remove();
 }
 
 /**
